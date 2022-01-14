@@ -6,7 +6,50 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Admin/Doctor/Appointment-Booking') }}</div>
-
+                <div class="alert alert-danger">
+                    <p class="text-dark">
+                        <strong>
+                            &nbsp Doctor's Name: <u>Dr. {{$doctor->fname}} {{$doctor->lname}}</u><br>
+                            &nbsp Department: <u>{{$doctor->department}}</u>
+                            &nbsp Visiting Day: <u>{{$doctor->visiting_day}}</u>
+                            &nbsp Visiting Time: <u>{{$doctor->visiting_time}}  {{$doctor->visiting_time_format}}</u>
+                        </strong>
+                    </p>
+                </div>
+                <div class="alert alert-success">
+                    <p><strong>Existing All Appointments</strong></p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Sl.No</th>
+                                <th scope="col">Patient-Name</th>
+                                <th scope="col">Date-of-Booking</th>
+                                <th scope="col">Time</th>
+                                <th scope="col">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @if ($appointments->count() > 0)
+                            <input type="hidden" value = "{{$i = ($appointments->currentpage()-1)* $appointments->perpage() + 1}}"></input>
+                            @foreach($appointments as $app)
+                            <tr>
+                                <th scope="row">{{$i++}}</th>
+                                <td>{{$app->patient->fname}}&nbsp{{$app->patient->lname}}</td>
+                                <td>{{Carbon\Carbon::parse($app->date_of_appointment)->format('d-m-Y')}}</td>
+                                <td>{{$app->time}}</td>
+                                <td>
+            
+                                </td>
+                            </tr>
+                            @endforeach
+                        @else 
+                            <tr>
+                                <td colspan="5"><div class="alert alert-danger">No record found</td>
+                            </tr>
+                        @endif
+                        </tbody>
+                    </table>
+                </div>
                 <div class="card-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
@@ -24,15 +67,6 @@
                             </ul>
                         </div>
                     @endif
-
-                    <div class="alert alert-success">
-                            <p><strong>Doctor's Name: Dr. {{$doctor->fname}} {{$doctor->lname}}</strong></p>
-                            <ul>
-                                <li>Department: {{$doctor->department}}</li>
-                                <li>Visiting Day: {{$doctor->visiting_day}}</li>
-                                <li>Visiting Time: {{$doctor->visiting_time}}  {{$doctor->visiting_time_format}}</li>
-                            </ul>
-                        </div>
 
                     <form method="POST" action="{{ route('appointment.save') }}">
                         @csrf

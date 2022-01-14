@@ -224,6 +224,7 @@ class AdminController extends Controller
     public function bookAppointment($id)
     {
         $doctor = User::findOrFail($id);
+        $appointments = Appointment::where('doctor_id',$doctor->id)->where('status',1)->paginate(5);
 
         $patients = User::where('user_type',3)->where('status',1)->orderBy('fname','asc')->get();
         $patientArr = ['' => 'Select Patient'];
@@ -231,7 +232,7 @@ class AdminController extends Controller
             $patientArr[$p->id] = $p->fname.'-'.$p->lname;
         endforeach;
 
-        return view('admin.booking',compact('doctor','patientArr'));
+        return view('admin.booking',compact('doctor','patientArr','appointments'));
     }
 
     public function appointmentSave(Request $request)
